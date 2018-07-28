@@ -1,0 +1,514 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>CS498 Final Project – Narrative Visualization</title>
+    <!--script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.js"></script-->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <!--script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script-->
+    <!--link rel="stylesheet" href="css/bootstrap.min.css"-->
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+<style>
+
+
+</style>
+</head>  
+
+<body topmargin="25" leftmargin="50" marginheight="50" marginwidth="50">
+
+    <h1>CS498 Final Project – Narrative Visualization</h1>
+<!-- Tab links -->
+<div class="tab">
+
+    <button class="tablinks" onclick="openCity(event, 'About')">About the Visualization</button>
+    <button class="tablinks" onclick="openCity(event, 'Fdi')">FDI</button>
+    <button class="tablinks" onclick="openCity(event, 'Mobile')">Mobile Subscription</button>
+    
+</div>
+<div class="divbox">
+  
+
+  <!-- Tab content -->  
+    <div id="About" class="tabcontent">
+        <h3>Comparison of the economic powerhouses of Africa</h3>
+        <p>
+            This visualization project follows the <strong>slide show narative structure</strong> in conveying its message.
+
+        </p>
+    </div>
+
+    
+  <div id="Mobile" class="tabcontent">
+        <h3>Cell Phone Subscriptions per 100 persons</h3>
+        <div id="my-vis"></div>
+    <script>
+        var width = 600;
+        var height = 500;
+        var margin = 100;
+
+  //Mobile subscriptions per 100 people
+        var data = [
+            {
+            country: "Egypt",
+            value:  "100"
+            },
+            {
+            country: "Ethiopia",
+            value: "42"
+            },
+            {
+            country: "Kenya",
+            value: "80"
+            },
+            {
+            country: "Nigeria",
+            value:  "83"
+            },
+            {
+            country: "South Africa",
+            value: "159"
+            }]
+
+        
+        // create the outer svg
+        var svg = d3.select('#my-vis')  
+                    .append('svg')
+                      .attr('height', height)
+                      .attr('width', width);
+
+   
+
+ var simulation = d3.forceSimulation()
+       .force("link", d3.forceLink().distance(75)
+       .id(function(d){return d.value;}))
+       .force("charge", d3.forceManyBody().strength(-50))
+       .force("cener", d3.forceCenter(width/2, height/2));
+
+  // Define the div for the tooltip
+    var div = d3.select("body").append("div")	
+        .attr("class", "tooltip")				
+        .style("opacity", 0);
+
+        var pack = d3.pack()
+        .size([width-150, height])
+        .padding(1.5);
+
+        //var color = d3.scaleOrdinal(d3.schemeAccent);
+       // var color = d3.scaleOrdinal()
+  //.domain(data.map(function(d){ return d.country;}))
+  //.range(['#fbb4ae','#b3cde3','#ccebc5','#decbe4','#fed9a6',
+  //'#ffe9a8','#b9bfe3','#fddaec','#cccccc']);
+
+
+var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+        var root = d3.hierarchy({children: data})
+      .sum(function(d) { return d.value; })
+
+  var node = svg.selectAll(".node")
+    .data(pack(root).leaves())
+    .enter().append("g")
+      .attr("class", "node")
+      .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+node.append("circle")
+      .attr("id", function(d) { return d.id; })
+      .attr("r", function(d) { return d.r; })
+      .style("fill", function(d) { return color(d.data.country); })
+      .on("mouseover", function(d) {		
+    div.transition()		
+      .duration(200)		
+      .style("opacity", .9);	
+
+
+      var duration = 300;
+  data.forEach(function(d, i) {
+    //console.log(d.value);
+    node.transition().duration(duration).delay(i * duration)
+        .attr("r", d.value);
+});
+     
+div.html(d.data.country + ": <br>"+d.data.value  )	
+      .style("left", (d3.event.pageX) + "px")		
+      .style("top", (d3.event.pageY - 28) + "px");	
+  })					
+    .on("mouseout", function(d) {		
+    div.transition()		
+      .duration(500)		
+      .style("opacity", 0);	
+  });
+
+    //write country on the bubble
+    node.append("text")
+      .text(function(d) {
+       return d.data.country;
+      });
+     
+
+   
+
+
+
+        var legend = svg.selectAll(".legend")
+        .data(data).enter()
+        .append("g")
+        .attr("class","legend")
+        .attr("transform", "translate(" + 780 + "," + 120+ ")");
+     
+    legend.append("rect")
+     .attr("x", 0) 
+     .attr("y", function(d, i) { return 20 * i; })
+     .attr("width", 15)
+     .attr("height", 15)
+		.style("fill", function(d) { return color(d.country)});
+   
+
+    legend.append("text")
+     .attr("x", 25) 
+    	.attr("text-anchor", "start")
+     .attr("dy", "1em") 
+     .attr("y", function(d, i) { return 20 * i; })
+     .text(function(d) {return d.country;})
+    .attr("font-size", "12px"); 
+  
+      
+    legend.append("text")
+     .attr("x",31) 
+     .attr("dy", "-.2em")
+     .attr("y",-10)
+     .text("Call Type")
+  	.attr("font-size", "17px"); 
+
+  
+
+        </script>
+  </div>
+  
+
+
+  <div id="Fdi" class="tabcontent">
+        <h3>Foreign Direct Investment</h3>
+        <div id="chart"></div>
+
+     <script>
+
+        var width = 600;
+        var height = 500;
+        var margin = 100;
+
+//data
+      var data =[
+    {
+      name: "Egypt",
+      values: [
+      {date: "2000", fdi: "-1184000000"},
+      {date: "2001", fdi: "-497500000"},
+      {date: "2002", fdi: "-619100000"},
+      {date: "2003", fdi: "-216700000"},
+      {date: "2004", fdi: "-1094400000"},
+      {date: "2005", fdi: "-5283600000"},
+      {date: "2006", fdi: "-9894400000"},
+      {date: "2007", fdi: "-10913300000"},
+      {date: "2008", fdi: "-7574400000"},
+      {date: "2009", fdi: "-6140400000"},
+      {date: "2010", fdi: "-5210100000"},
+      {date: "2011", fdi: "1108200000"},
+      {date: "2012", fdi: "-2586600000"},
+      {date: "2013", fdi: "-3891200000"},
+      {date: "2014", fdi: "-4530500000"},
+      {date: "2015", fdi: "-6703100000"}
+      ]
+    },
+    {
+        name: "Nigeria",
+      values: [
+      {date: "2000", fdi: "-1140167556"},
+      {date: "2001", fdi: "-1190618644"},
+      {date: "2002", fdi: "-1874070753"},
+      {date: "2003", fdi: "-2005353563"},
+      {date: "2004", fdi: "-1874060887"},
+      {date: "2005", fdi: "-4967898853"},
+      {date: "2006", fdi: "-4534735267"},
+      {date: "2007", fdi: "-5168340726"},
+      {date: "2008", fdi: "-7144050854"},
+      {date: "2009", fdi: "-7029618943"},
+      {date: "2010", fdi: "-5114515368"},
+      {date: "2011", fdi: "-8024348691"},
+      {date: "2012", fdi: "-5539804914"},
+      {date: "2013", fdi: "-4335435961"},
+      {date: "2014", fdi: "-3054616509"},
+      {date: "2015", fdi: "-1663213531"}
+      ]
+    },
+    {
+      name: "Kenya",
+      values: [
+      {date: "2000", fdi: "-110904550.4"},
+      {date: "2001", fdi: "-5302622.939"},
+      {date: "2002", fdi: "-20202582.1"},
+      {date: "2003", fdi: "-79662930.62"},
+      {date: "2004", fdi: "-41647828.35"},
+      {date: "2005", fdi: "-11524455.87"},
+      {date: "2006", fdi: "-26717027.61"},
+      {date: "2007", fdi: "-693011390.5"},
+      {date: "2008", fdi: "-51819059.31"},
+      {date: "2009", fdi: "-70269794.39"},
+      {date: "2010", fdi: "-176486731.9"},
+      {date: "2011", fdi: "-1364485299"},
+      {date: "2012", fdi: "-1141800837"},
+      {date: "2013", fdi: "-920213255.9"},
+      {date: "2014", fdi: "-745818751.7"},
+      {date: "2015", fdi: "-377731883.4"}
+      ]
+    },
+    {
+      
+      name: "Ethiopia",
+      values: [
+      {date: "2000", fdi: "0"},
+      {date: "2001", fdi: "0"},
+      {date: "2002", fdi: "0"},
+      {date: "2003", fdi: "0"},
+      {date: "2004", fdi: "0"},
+      {date: "2005", fdi: "-265111675.5"},
+      {date: "2006", fdi: "-545257102.2"},
+      {date: "2007", fdi: "-222000573"},
+      {date: "2008", fdi: "-108537544"},
+      {date: "2009", fdi: "-221459581.4"},
+      {date: "2010", fdi: "-288271568.3"},
+      {date: "2011", fdi: "-626509560.4"},
+      {date: "2012", fdi: "-278562822.2"},
+      {date: "2013", fdi: "-1343876024"},
+      {date: "2014", fdi: "-1855050376"},
+      {date: "2015", fdi: "-2626520130"}
+      ]
+    },
+    {
+      name: "South Africa",
+      values: [
+      {date: "2000", fdi: "-691652738.6"},
+      {date: "2001", fdi: "-10785077716"},
+      {date: "2002", fdi: "-1882067010"},
+      {date: "2003", fdi: "-230592460"},
+      {date: "2004", fdi: "604002318.6"},
+      {date: "2005", fdi: "-5612683803"},
+      {date: "2006", fdi: "5305504771"},
+      {date: "2007", fdi: "-3604679769"},
+      {date: "2008", fdi: "-12004584138"},
+      {date: "2009", fdi: "-6313190334"},
+      {date: "2010", fdi: "-3854564952"},
+      {date: "2011", fdi: "-4292687424"},
+      {date: "2012", fdi: "-1727159492"},
+      {date: "2013", fdi: "-1712645458"},
+      {date: "2014", fdi: "1900417869"},
+      {date: "2015", fdi: "3993788901"}
+      ]
+    }
+   ];
+
+    
+
+// Set the dimensions of the canvas / graph
+//var margin = {top: 30, right: 20, bottom: 70, left: 50};
+    //width = 600 - margin.left - margin.right,
+    //height = 500 - margin.top - margin.bottom;
+
+    var duration = 250;
+
+    var lineOpacity = "0.75";
+    var lineOpacityHover = "0.85";
+    var otherLinesOpacityHover = "0.1";
+    var lineStroke = "1.5px";
+    var lineStrokeHover = "2.5px";
+
+    var circleOpacity = '0.85';
+    var circleOpacityOnLineHover = "0.25"
+    var circleRadius = 3;
+    var circleRadiusHover = 6;
+
+
+    /* Format Data */
+    var parseDate = d3.timeParse("%Y");
+    data.forEach(function(d) { 
+    d.values.forEach(function(d) {
+        d.date = parseDate(d.date);
+        d.fdi = +d.fdi; 
+         
+    });
+    });
+
+
+    /* Scale */
+    var xScale = d3.scaleTime()
+    .domain(d3.extent(data[0].values, d => d.date))
+    .range([0, width-margin]);
+
+    var yScale = d3.scaleLinear()
+    .domain([d3.min(data[0].values, d => d.fdi)-2000000000,4000000000 ])
+    .range([(height-margin), 0]);
+
+    var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+
+
+    /* Add SVG */
+    var svg = d3.select("#chart").append("svg")
+    .attr("width", (width+margin)+"px")
+    .attr("height", (height+margin)+"px")
+    .append('g')
+    .attr("transform", `translate(${margin}, ${margin})`);
+
+
+    /* Add line into SVG */
+    var line = d3.line()
+    .x(d => xScale(d.date))
+    .y(d => yScale(d.fdi));
+
+    let lines = svg.append('g')
+    .attr('class', 'lines');
+
+    lines.selectAll('.line-group')
+    .data(data).enter()
+    .append('g')
+    .attr('class', 'line-group')  
+    .on("mouseover", function(d, i) {
+        svg.append("text")
+            .attr("class", "title-text")
+            .style("fill", color(i))        
+            .text(d.name)
+            .attr("text-anchor", "middle")
+            .attr("x", (width-margin)/2)
+            .attr("y", 5);
+        })
+    .on("mouseout", function(d) {
+        svg.select(".title-text").remove();
+        })
+    .append('path')
+    .attr('class', 'line')  
+    .attr('d', d => line(d.values))
+    .style('fill','none')
+    .style('stroke', (d, i) => color(i))
+    .style('opacity', lineOpacity)
+    .on("mouseover", function(d) {
+        d3.selectAll('.line')
+                        .style('opacity', otherLinesOpacityHover);
+        d3.selectAll('.circle')
+                        .style('opacity', circleOpacityOnLineHover);
+        d3.select(this)
+            .style('opacity', lineOpacityHover)
+            .style("stroke-width", lineStrokeHover)
+            .style("cursor", "pointer");
+        })
+    .on("mouseout", function(d) {
+        d3.selectAll(".line")
+             .style('opacity', lineOpacity);
+        d3.selectAll('.circle')
+            .style('opacity', circleOpacity);
+        d3.select(this)
+            .style("stroke-width", lineStroke)
+            .style("cursor", "none");
+
+        });
+
+
+    /* Add circles in the line */
+    lines.selectAll("circle-group")
+    .data(data).enter()
+    .append("g")
+    .style("fill", (d, i) => color(i))
+    .selectAll("circle")
+    .data(d => d.values).enter()
+    .append("g")
+    .attr("class", "circle")  
+    .on("mouseover", function(d) {
+        d3.select(this)     
+            .style("cursor", "pointer")
+            .append("text")
+            .attr("class", "text")
+            .text(`${d.fdi}`)
+            .attr("x", d => xScale(d.date) + 5)
+            .attr("y", d => yScale(d.fdi) - 10);
+        })
+    .on("mouseout", function(d) {
+        d3.select(this)
+            .style("cursor", "none")  
+            .transition()
+            .duration(duration)
+            .selectAll(".text").remove();
+        })
+    .append("circle")
+    .attr("cx", d => xScale(d.date))
+    .attr("cy", d => yScale(d.fdi))
+    .attr("r", circleRadius)
+    .style('opacity', circleOpacity)
+    .on("mouseover", function(d) {
+            d3.select(this)
+            .transition()
+            .duration(duration)
+            .attr("r", circleRadiusHover);
+        })
+        .on("mouseout", function(d) {
+            d3.select(this) 
+            .transition()
+            .duration(duration)
+            .attr("r", circleRadius);  
+
+            
+        });
+
+
+    /* Add Axis into SVG */
+    var xAxis = d3.axisBottom(xScale).ticks(5);
+    var yAxis = d3.axisLeft(yScale).ticks(10);
+
+    svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", `translate(0, ${height-margin})`)
+    .call(xAxis)
+    .append('text')
+    .attr("x", width/2)
+    .attr("y", 30)
+    .attr("fill", "#000")
+    .text("Year");
+
+    svg.append("g")
+    .attr("class", "y axis")
+    .call(yAxis)
+    .append('text')
+    .attr("y", 15)
+    .attr("transform", "rotate(-90)")
+    .attr("fill", "#000")
+    .text("BoP USD");
+
+
+
+        
+
+    </script>
+  </div>
+
+
+
+
+
+
+  <script>
+    function openCity(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+    </script>
+    </div>
+</div>
+  </body>
+  </html>

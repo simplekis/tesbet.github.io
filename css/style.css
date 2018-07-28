@@ -4,6 +4,11 @@ body {
     margin:50;padding:0;
 }
 
+.divbox {
+    width: 900px;
+    height: 700px;
+    border: 1px solid rgb(182, 177, 177);
+}
 /* Style the tab */
 .tab {
     overflow: hidden;
@@ -58,11 +63,7 @@ body {
     text-anchor: middle;
 }
 
-.divbox {
-    width: 900px;
-    height: 600px;
-    border: 1px solid rgb(182, 177, 177);
-}
+
 
 
 div.tooltip {	
@@ -77,3 +78,12 @@ div.tooltip {
     border-radius: 8px;			
     pointer-events: none;			
   }
+
+  #flink {
+    position: absolute;
+    left: 100px;
+    top: 750px;
+}
+.spec1{
+    color:blue
+}

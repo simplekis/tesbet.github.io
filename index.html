@@ -4,15 +4,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <title>CS498 Final Project – Narrative Visualization</title>
-    <!--script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.js"></script-->
     <script src="https://d3js.org/d3.v4.min.js"></script>
-    <!--script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script-->
-    <!--link rel="stylesheet" href="css/bootstrap.min.css"-->
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-<style>
-
-
-</style>
+   <link rel="stylesheet" type="text/css" href="css/style.css">
+   <style>
+    
+    </style>
 </head>  
 
 <body topmargin="25" leftmargin="50" marginheight="50" marginwidth="50">
@@ -31,11 +27,49 @@
 
   <!-- Tab content -->  
     <div id="About" class="tabcontent">
-        <h3>Comparison of the economic powerhouses of Africa</h3>
+        <h2>Comparison of the economic performance of select African countries</h2>
         <p>
             This visualization project follows the <strong>slide show narative structure</strong> in conveying its message.
-
+           
+             
+        
         </p>
+        The story has two scenes. And It tries to show how the following five African countries (which are from all four corners of the continent and relative economic powerhouses)
+        perform economically using two indicators: FDI and Mobile Subscribers.
+        <ul>
+            <li>Egypt, Ethiopia, Kenya, Nigeria, South Africa</li>
+        </ul>
+
+        <h3>Scene/slide 1</h3>
+        The first scene is a multi-lines chart showing the yearly amount in USD of Direct Foreign Investment that happened in the five countries under consideration
+        from year 2000 to 2015.
+
+        <ol>
+                <li> The tapped buttons at the top of this page are used to navigate the charts. They are the <span class="spec1"><strong>triggers</strong></span> .</li>
+                <li> The charts are <span class="spec1"><strong>annotated</strong> </span>at the top to tell the viewer what they are.</li>
+                    <li> On the first scene itself, the user has the ability to isolate each country's chart line.
+                            This is done simply by pointing the mouse on a line/stroke (not points).
+                        This is accomplished by using the mouse input as a <span class="spec1"><strong>parameter</strong></span> to filter that specific country's chart.  </li>
+                    <li>Tuft's minimalist approach is used. It uses visual cues like tooltips to identify which country or what amount instead of putting legend and other clutters.</li>
+                
+            </ol>
+       <h3>Scene/slide 2</h3>
+        The second scene is a buble chart showing the percentage of mobile phone suscribers that is a good indicator of commerce and otherLinesOpacityHovereconomic activies.
+            
+        
+        <div>
+            <p>
+            Finally, this presentation has used techniques presented at the following links, among others:
+            <a href="https://bl.ocks.org/anaeliaovalle/e3bafe7893271fa227c2776607f52174">Anaelia Ovalle's Block </a>
+            and <a href="https://codepen.io/zakariachowdhury/pen/JEmjwq">Zakaria Chodhury's codepen</a>.
+           </p>
+        </div>
+ 
+        <div id="flink">
+            <p>For a quick comparison,you can see my <a href="https://public.tableau.com/profile/tesfaye.betemariam#!/vizhome/AfricaFDI/Dashboard?publish=yes">mid-term tableau project.</a></p>        
+        </div>
+        
+         
     </div>
 
     
@@ -79,12 +113,6 @@
 
    
 
- var simulation = d3.forceSimulation()
-       .force("link", d3.forceLink().distance(75)
-       .id(function(d){return d.value;}))
-       .force("charge", d3.forceManyBody().strength(-50))
-       .force("cener", d3.forceCenter(width/2, height/2));
-
   // Define the div for the tooltip
     var div = d3.select("body").append("div")	
         .attr("class", "tooltip")				
@@ -122,14 +150,9 @@ node.append("circle")
       .style("opacity", .9);	
 
 
-      var duration = 300;
-  data.forEach(function(d, i) {
-    //console.log(d.value);
-    node.transition().duration(duration).delay(i * duration)
-        .attr("r", d.value);
-});
      
-div.html(d.data.country + ": <br>"+d.data.value  )	
+     
+div.html(d.data.country + ": <br> "+d.data.value  )	
       .style("left", (d3.event.pageX) + "px")		
       .style("top", (d3.event.pageY - 28) + "px");	
   })					
@@ -139,61 +162,26 @@ div.html(d.data.country + ": <br>"+d.data.value  )
       .style("opacity", 0);	
   });
 
-    //write country on the bubble
+    
+     //write country on the bubble
     node.append("text")
       .text(function(d) {
        return d.data.country;
       });
-     
 
-   
-
-
-
-        var legend = svg.selectAll(".legend")
-        .data(data).enter()
-        .append("g")
-        .attr("class","legend")
-        .attr("transform", "translate(" + 780 + "," + 120+ ")");
-     
-    legend.append("rect")
-     .attr("x", 0) 
-     .attr("y", function(d, i) { return 20 * i; })
-     .attr("width", 15)
-     .attr("height", 15)
-		.style("fill", function(d) { return color(d.country)});
-   
-
-    legend.append("text")
-     .attr("x", 25) 
-    	.attr("text-anchor", "start")
-     .attr("dy", "1em") 
-     .attr("y", function(d, i) { return 20 * i; })
-     .text(function(d) {return d.country;})
-    .attr("font-size", "12px"); 
-  
-      
-    legend.append("text")
-     .attr("x",31) 
-     .attr("dy", "-.2em")
-     .attr("y",-10)
-     .text("Call Type")
-  	.attr("font-size", "17px"); 
-
-  
 
         </script>
   </div>
   
 
-
+ <!-- TAB: FOREIGN DIRECT INVESTMENT-->
   <div id="Fdi" class="tabcontent">
         <h3>Foreign Direct Investment</h3>
         <div id="chart"></div>
 
      <script>
 
-        var width = 600;
+        var width = 800;
         var height = 500;
         var margin = 100;
 
@@ -426,7 +414,7 @@ div.html(d.data.country + ": <br>"+d.data.value  )
             .style("cursor", "pointer")
             .append("text")
             .attr("class", "text")
-            .text(`${d.fdi}`)
+            .text(`$${d.fdi.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`)
             .attr("x", d => xScale(d.date) + 5)
             .attr("y", d => yScale(d.fdi) - 10);
         })
